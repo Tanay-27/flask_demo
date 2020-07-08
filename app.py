@@ -10,20 +10,21 @@ api = Instamojo(api_key=API_KEY,
                 auth_token=AUTH_TOKEN,
                 endpoint='https://test.instamojo.com/api/1.1/')
 
-def createPayment(pur,amt):
-    response = api.payment_request_create(
-        amount=amt,
-        purpose=pur,
-        redirect_url= url_for('paymentredirect')
-        )
-    rep = response['payment_request']['longurl']
-    return rep #response['payment_request']['longurl']
+response = api.payment_request_create(
+	amount=15,
+	purpose="app test",
+	send_email=True,
+	email="tanayshah027@gmail.com",
+	redirect_url="https://salaryprices-api.herokuapp.com/payments"     #url_for('paymentredirect')     #"https://salaryprices-api.herokuapp.com/payments"
+	)
+    #rep = response['payment_request']['longurl']
+#    return  'done' #rep #response['payment_request']['longurl']
 @app.route('/')
 def home():
     amt = 15
     pur = "Check"
-    x = createPayment(amt,pur)
-    return render_template('index.html',x)
+    #x = createPayment(amt,pur)
+    return render_template('index.html')
 
 @app.route('/payments',methods=['POST'])
 def paymentredirect():
