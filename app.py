@@ -1,27 +1,37 @@
-import numpy as np
-from flask import Flask, request, jsonify, render_template
-import pickle
+#import numpy as np
+from flask import Flask, request, render_template, url_for
+from instamojo_wrapper import Instamojo
 
 app = Flask(__name__)
-model = pickle.load(open('model.pkl', 'rb'))
+#model = pickle.load(open('model.pkl', 'rb'))
+API_KEY = 'test_a7fe6937b28c505f371ce8ca286'
+AUTH_TOKEN = 'test_a68ddfad2ea46762db39aadd1e3'
+api = Instamojo(api_key=API_KEY,
+                auth_token=AUTH_TOKEN,
+                endpoint='https://test.instamojo.com/api/1.1/')
 
+def createPayment(pur,amt):
+    response = api.payment_request_create(
+        amount=amt,
+        purpose=pur,
+        redirect_url= url_for('paymentredirect')
+        )
+    rep = response['payment_request']['longurl']
+    return rep #response['payment_request']['longurl']
 @app.route('/')
 def home():
-    return render_template('index.html')
+    amt = 15
+    pur = "Check"
+    x = createPayment(amt,pur)
+    return render_template('index.html',x)
 
-@app.route('/predict',methods=['POST'])
-def predict():
+@app.route('/payments',methods=['POST'])
+def paymentredirect():
     '''
     For rendering results on HTML GUI
     '''
-    int_features = [int(x) for x in request.form.values()]
-    final_features = [np.array(int_features)]
-    prediction = model.predict(final_features)
-
-    output = round(prediction[0], 2)
-
-    return render_template('index.html', prediction_text='Employee Salary should be $ {}'.format(output))
-
+    print(request.form['payment_request'])  # should display 'bar'
+    return render_template('index.html',text = "Thankyou for Purchasing, your payment is recieved")
 
 if __name__ == "__main__":
     app.run(debug=True)
