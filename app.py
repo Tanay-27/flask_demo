@@ -18,7 +18,7 @@ response = api.payment_request_create(
 	redirect_url="https://salaryprices-api.herokuapp.com/payments"     #url_for('paymentredirect')     #"https://salaryprices-api.herokuapp.com/payments"
 	)
     #rep = response['payment_request']['longurl']
-#    return  'done' #rep #response['payment_request']['longurl']
+    return  'done' #rep #response['payment_request']['longurl']
 @app.route('/')
 def home():
     amt = 15
@@ -31,6 +31,8 @@ def paymentredirect():
     '''
     For rendering results on HTML GUI
     '''
+    id = request.args.get('id')
+    stat = request.args.get('status')
     print(request.form['payment_request'])  # should display 'bar'
     return render_template('index.html',text = "Thankyou for Purchasing, your payment is recieved")
 
