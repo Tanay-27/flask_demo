@@ -26,18 +26,20 @@ response = api.payment_request_create(
 #    #x = createPayment(amt,pur)
 #    return render_template('index.html')
 
-@app.route('/payments',methods=['POST'])
+@app.route(r'/payments',methods=['POST'])
 def paymentredirect():
     '''
     For rendering results on HTML GUI
     '''
-    id = request.args.get('id')
-    stat = request.args.get('status')
+    id = request.args.get('payment_id')
+    stat = request.args.get('payemnt_status')
+    req = reuest.args.get('payment_reuqest_id')
     print(request.form['payment_request'])  # should display 'bar'
     dict = {
         'text':"Thankyou for purchasing",
         'id': id,
         'status':stat
+        'req':req
 
     }
     return render_template('index.html',dict)
